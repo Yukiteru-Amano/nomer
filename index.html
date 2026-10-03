@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Охота за номерами</title>
+<script src="/sdk.js"></script>
+<style>
+@property --g{syntax:'<color>';inherits:true;initial-value:rgba(120,120,140,.2)}
+:root{--bg:#09090d;--panel:#16161e;--line:rgba(255,255,255,.09);--text:#ececf4;--muted:#8b8b9e;--g:rgba(120,120,140,.2)}
+html,body{height:100%;margin:0}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--text);font-family:"Segoe UI",system-ui,sans-serif;user-select:none;-webkit-user-select:none;touch-action:manipulation;overflow:hidden;display:flex;justify-content:center}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+#app{position:relative;width:100%;max-width:480px;height:100%;overflow:hidden;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+#glow{position:absolute;inset:0;background:radial-gradient(ellipse 85% 34% at 50% 50%,var(--g),transparent 72%);transition:--g .5s}
+#top{position:absolute;top:env(safe-area-inset-top,0);left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:14px 16px;z-index:5;font-weight:600;color:#a9a9bb}
+#top .r{display:flex;gap:12px;align-items:center}#top button{font-size:26px;line-height:1;padding:2px 6px;color:#cfcfdd}
+#usd{color:#9fd4ff}#lk{color:#4ade80;font-size:14px}
+#mid{position:absolute;left:0;right:0;top:50%;transform:translateY(-62%);padding:0 18px;text-align:center}
+#rb{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:14px;padding:9px 14px;margin:0 8px 10px}
+#rn{font-size:12px;font-weight:600}#dash i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:3px;background:rgba(255,255,255,.16)}
+#rl{display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+#pv{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+.plate{container-type:inline-size;display:flex;aspect-ratio:4.6;border-radius:9px;border:3px solid #1b1b1b;background:linear-gradient(#f4f4f4,#d4d4d4);color:#141414;box-shadow:0 8px 30px rgba(0,0,0,.6),inset 0 0 0 2px rgba(255,255,255,.5);overflow:hidden}
+.plate.t1{background:linear-gradient(#ffc61a,#e6a800)}.plate.t2{color:#0b2a80}
+.pm{flex:1;display:flex;align-items:center;justify-content:center;font:700 15.5cqw/1 "Arial Narrow","Roboto Condensed","Helvetica Neue",Arial,sans-serif;letter-spacing:.01em;white-space:pre}
+.pr{width:27%;border-left:3px solid #1b1b1b;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2cqw}
+.pr b{font:700 12.5cqw/.9 "Arial Narrow","Roboto Condensed",Arial,sans-serif}.pr b.s{font-size:9.5cqw}
+.pr i{font:700 3.6cqw/1 Arial,sans-serif;font-style:normal;display:flex;align-items:center;gap:1.2cqw}
+.flag{width:5.2cqw;height:3.5cqw;border:1px solid #222;background:linear-gradient(#fff 33%,#0039a6 33% 66%,#d52b1e 66%)}
+.pop{animation:pop .22s ease-out}@keyframes pop{from{transform:scale(.9);opacity:.4}to{transform:none;opacity:1}}
+#ds{margin-top:18px;color:#c9c9d6;line-height:1.55;font-size:15px;min-height:76px;opacity:0;transition:opacity .35s}
+#hint{position:absolute;left:0;right:0;top:50%;text-align:center;color:var(--muted);animation:bl 1.6s infinite}@keyframes bl{50%{opacity:.35}}
+#chip{position:absolute;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0));transform:translateX(-50%);display:flex;gap:8px;align-items:center;background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:14px;padding:9px 16px;font-weight:600;z-index:4}
+#chip small{color:var(--muted);font-weight:400}.flag.b{width:20px;height:14px}
+#ts{position:absolute;top:calc(58px + env(safe-area-inset-top,0));left:12px;right:12px;z-index:6;display:flex;flex-direction:column;gap:8px}
+.toast{display:flex;align-items:center;gap:10px;background:rgba(32,28,12,.96);border:1px solid rgba(250,204,21,.4);box-shadow:0 0 24px rgba(250,204,21,.18);border-radius:14px;padding:9px 12px;animation:sl .3s}@keyframes sl{from{transform:translateY(-16px);opacity:0}}
+.toast .ic{width:34px;height:34px;border-radius:9px;background:#facc15;display:grid;place-items:center;font-size:18px}.toast div{flex:1}.toast b{display:block;font-size:14px}.toast small{color:#b9b9c8;font-size:11px}
+.toast button{background:#facc15;color:#1a1400;font-weight:700;font-size:12px;padding:7px 12px;border-radius:20px}
+#fx{position:absolute;inset:0;pointer-events:none;z-index:3}
+.ov{position:absolute;inset:0;z-index:10;background:var(--bg);overflow:auto;padding:16px}
+.ov h2{margin:0;font-size:18px}.hd{display:flex;align-items:center;gap:12px;margin-bottom:14px}.hd button{font-size:24px}
+.tabs{display:flex;gap:8px;margin-bottom:14px}.tabs button{padding:7px 16px;border-radius:10px;background:var(--panel);color:var(--muted);font-weight:600;font-size:13px}.tabs .on{background:#1d5fd1;color:#fff}
+.bar{height:6px;border-radius:4px;background:#23232e;overflow:hidden;margin:6px 0 14px}.bar i{display:block;height:100%;border-radius:4px}
+.cards{display:flex;gap:10px;margin-bottom:16px}.cd{flex:1;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}.cd b{display:block;font-size:20px}.cd small{color:var(--muted);font-size:11px}
+.row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-size:13px;color:#cfcfdd;border-bottom:1px solid rgba(255,255,255,.04)}.row span:last-child{color:var(--muted)}
+.rr{display:grid;grid-template-columns:96px 1fr 44px;gap:10px;align-items:center;font-size:12px;margin:7px 0}.rr .bar{margin:0}.rr span:last-child{text-align:right;color:var(--muted)}
+#mn{background:rgba(0,0,0,.6);display:flex;align-items:flex-start}
+#mn .sh{width:78%;max-width:320px;height:100%;background:#12121a;padding:calc(18px + env(safe-area-inset-top,0)) 16px 16px;display:flex;flex-direction:column;gap:10px}
+#mn .sh button{text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px 14px;font-size:14px}
+#mn .sh button:disabled{opacity:.45}
+button:focus-visible{outline:2px solid #facc15;outline-offset:2px}
+#flash{position:absolute;inset:0;pointer-events:none;z-index:7;opacity:0}.fl{animation:fl .8s ease-out}@keyframes fl{0%{opacity:.9}100%{opacity:0}}
+.shake{animation:sk .55s}@keyframes sk{10%{transform:translate(-9px,5px)}30%{transform:translate(9px,-6px)}50%{transform:translate(-7px,-5px)}70%{transform:translate(6px,6px)}90%{transform:translate(-3px,2px)}}
+#bn{position:absolute;left:0;right:0;top:17%;text-align:center;z-index:8;pointer-events:none;opacity:0}#bn.on{animation:bn 2.4s ease-out forwards}
+@keyframes bn{0%{transform:scale(2.6);opacity:0}10%{transform:scale(1);opacity:1}80%{opacity:1}100%{opacity:0;transform:translateY(-16px) scale(1.04)}}
+#bt{font:900 30px/1.1 "Segoe UI",system-ui,sans-serif;letter-spacing:.06em;text-shadow:0 0 16px currentColor,0 0 44px currentColor}#bs{margin-top:8px;font:800 20px system-ui;text-shadow:0 0 14px currentColor}
+#ry{position:absolute;left:50%;top:46%;width:620px;height:620px;margin:-310px 0 0 -310px;opacity:0;transition:opacity .6s;pointer-events:none;background:repeating-conic-gradient(var(--rc,transparent) 0 8deg,transparent 8deg 24deg);-webkit-mask:radial-gradient(circle,#000 0,transparent 68%);mask:radial-gradient(circle,#000 0,transparent 68%);animation:sp 16s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
+.dx{padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:14px}.dx small{display:block;color:var(--muted);font-size:11px;margin-top:3px}.dx.lk{opacity:.72}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="glow"></div><canvas id="fx"></canvas><div id="ry"></div><div id="flash"></div><div id="bn"><div id="bt"></div><div id="bs"></div></div>
+  <div id="top"><button id="mb" aria-label="Меню">☰</button><div class="r"><span id="lk" hidden></span><span id="bal">0 ₽</span><span id="usd">0 $</span></div></div>
+  <div id="ts"></div>
+  <div id="hint">Нажми на экран — выпадет номер</div>
+  <div id="mid" hidden>
+    <div id="rb"><div id="rl"><span id="rn"></span><span id="dash"></span></div><span id="pv">0 ₽</span></div>
+    <div id="pl"></div><div id="ds"></div>
+  </div>
+  <button id="chip"><span class="flag b"></span> Россия <small>3 типа</small></button>
+  <div id="st" class="ov" hidden></div><div id="ix" class="ov" hidden></div>
+  <div id="mn" class="ov" hidden><div class="sh">
+    <button id="m1">📊 Статистика</button><button id="m6">📖 Индекс и секретки</button><button id="m2">🍀 Удача на 30 номеров — 3 $</button>
+    <button id="m3" hidden>📺 +3 $ за рекламу</button><button id="m4">🔊 Звук: вкл</button><button id="m5">🗑 Сбросить прогресс</button>
+  </div></div>
+</div>
+<script>
+const $=id=>document.getElementById(id),R=n=>Math.random()*n|0,pick=a=>a[R(a.length)];
+/*LOGIC*/
+const LET='АВЕКМНОРСТУХ',REG=['01','02','03','05','10','11','12','13','16','18','21','22','23','24','25','26','31','34','36','38','39','42','43','47','50','52','54','55','56','59','61','63','64','66','67','68','72','73','74','76','77','78','86','93','96','97','99','102','116','123','125','134','152','154','159','161','163','174','178','186','190','196','197','199','716','750','777','797','799'];
+const RAR=[{n:'Обычный',c:'#b4b4c4',t:0},{n:'Необычный',c:'#4ade80',t:5800},{n:'Редкий',c:'#60a5fa',t:98000},{n:'Эпический',c:'#a855f7',t:2300000},{n:'Легендарный',c:'#facc15',t:64000000}];
+const PN={dg:'Одинаковые цифры',lt:'Одинаковые буквы',pal:'Палиндром букв',mir:'Зеркальные цифры',seq:'Цифры подряд',rnd:'Круглый номер',reg:'Цифры совпадают с регионом',sm:'Малый номер',ace:'Серия «три туза»'};
+const TN=['Гражданский','Такси','Полиция'];
+const FP=[p=>{if(p.L.length>1)p.L[1]=p.L[0]},p=>{if(p.L.length>2)p.L[1]=p.L[2]=p.L[0]},p=>{if(p.L.length>2)p.L[2]=p.L[0]},p=>{p.D[1]=p.D[0]},p=>{p.D.fill(p.D[0])},
+p=>{const s=R(7),a=R(2)?1:-1,b=a>0?s:s+2;p.D[0]=b;p.D[1]=b+a;p.D[2]=b+2*a},p=>{p.D[2]=p.D[0]},p=>{p.D[1]=p.D[2]=0;if(!p.D[0])p.D[0]=1+R(9)},p=>{p.D[0]=p.D[1]=0;p.D[2]=1+R(9)},
+p=>{const r=p.reg;p.D[0]=+r[0];p.D[1]=+r[1];p.D[2]=r[2]?+r[2]:+r[0]}];
+function gen(){const type=Math.random()<.92?0:Math.random()<.9?1:2,p={type,L:[],D:[],reg:pick(REG)};
+for(let i=0;i<(type===0?3:type===1?2:1);i++)p.L.push(pick(LET));for(let i=0;i<(type===2?4:3);i++)p.D.push(R(10));
+let k=Math.random()<.03?2:Math.random()<.2?1:0;while(k--)pick(FP)(p);return p}
+function analyze(p){const{L,D,reg}=p,f=[],D3=D.slice(0,3);let m=1;const add=(k,x)=>{f.push(k);m*=x};
+const allL=L.length>2&&L.every(x=>x===L[0]),allD=D.every(x=>x===D[0]);
+if(allL)add('lt3',30);else if(L[0]===L[1]||(L.length>2&&(L[1]===L[2]||L[0]===L[2])))add('lt',4);
+if(L.length>2&&L[0]===L[2]&&!allL)add('pal',5);
+if(allD)add('dg3',D.length>3?60:25);else if(new Set(D).size<D.length)add('dg',2);
+if((D3[1]-D3[0]===1&&D3[2]-D3[1]===1)||(D3[0]-D3[1]===1&&D3[1]-D3[2]===1))add('seq',12);
+if(D3[0]===D3[2]&&!allD)add('mir',4);
+if(D3[1]===0&&D3[2]===0&&D3[0]>0)add('rnd',15);
+if(D3[0]===0&&D3[1]===0&&D3[2]>0)add('sm',60);
+if(D.join('').includes(reg))add('reg',18);
+if(allL&&new Set(D).size<D.length)add('ace',40);
+let fl=0;const dj=D3.join(''),ws=L.join(''),sec=(k,r)=>{f.push(k);fl=Math.max(fl,r)};
+if(dj==='777')sec('s777',3);if(dj==='666')sec('s666',3);if(D3.every(x=>!x))sec('s000',3);if(ws==='КОТ'&&p.type===0)sec('sKOT',3);if(D.join('').includes('112'))sec('s112',3);if(dj==='777'&&(reg==='77'||reg==='777'))sec('sMEGA',4);
+return{f,m,fl}}
+const ridx=v=>{let r=0;RAR.forEach((x,i)=>{if(v>=x.t)r=i});return r};
+const price=m=>Math.round((100+R(900))*m*(.9+Math.random()*.2));
+/*END*/
+let lang='ru';const fmt=n=>n.toLocaleString(lang==='en'?'en-US':'ru-RU');
+const LN={lt3:'3 одинаковые буквы',lt:'2 одинаковые буквы',dg:'2 одинаковые цифры',pal:'Палиндром букв',seq:'Цифры подряд',mir:'Зеркальные цифры',rnd:'Круглый номер',sm:'Малый номер',reg:'Цифры совпадают с регионом'};
+const emp=()=>({rolls:0,best:0,xp:0,rar:[0,0,0,0,0],pat:{},typ:[0,0,0]});
+let G=Object.assign(emp(),{bal:0,usd:0,luck:0,unl:[1,0,0,0,0],mute:false,dex:{}}),S=emp(),tab=0,anim=null,lastAd=Date.now(),adBusy=false,ysdk=null,ac=null;
+try{const j=JSON.parse(localStorage.getItem('plates_v1')||'null');if(j)Object.assign(G,j)}catch(e){}if(!G.dex)G.dex={};
+const save=()=>{try{localStorage.setItem('plates_v1',JSON.stringify(G))}catch(e){}};
+const need=l=>300*l*l,lvlOf=xp=>{let l=1;while(xp>=need(l)){xp-=need(l);l++}return[l,xp]};
+/* audio */
+function au(){if(!ac){try{ac=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(ac&&ac.state==='suspended')ac.resume();return ac}
+function tone(f,d,ty='sine',v=.12,t0=0){if(G.mute||adBusy)return;const a=au();if(!a)return;const o=a.createOscillator(),g=a.createGain(),t=a.currentTime+t0;o.type=ty;o.frequency.value=f;g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+d)}
+const chime=r=>{if(r<1)return;[0,4,7,12,16].slice(0,r+1).forEach((s,i)=>tone(440*2**(s/12),.3,'sine',.13,i*.08))};
+document.addEventListener('visibilitychange',()=>{if(ac)document.hidden?ac.suspend():ac.resume()});
+addEventListener('contextmenu',e=>e.preventDefault());
+/* yandex */
+function fsAd(cb){if(!ysdk||Date.now()-lastAd<90000)return cb();ysdk.adv.showFullscreenAdv({callbacks:{onOpen:()=>{adBusy=true},onClose:()=>{adBusy=false;lastAd=Date.now();cb()},onError:()=>{adBusy=false;cb()}}})}
+function rewardAd(){if(!ysdk)return;let ok=false;ysdk.adv.showRewardedVideo({callbacks:{onOpen:()=>{adBusy=true},onRewarded:()=>{ok=true},onClose:()=>{adBusy=false;lastAd=Date.now();if(ok){G.usd+=3;hud();save();toast('💵','+3 $','Спасибо за просмотр')}},onError:()=>{adBusy=false}}})}
+/* i18n: язык берём из Yandex SDK (ru/be/kk/uk/uz -> русский, остальные -> английский) */
+const EN=[['Нажми на экран — выпадет номер','Tap the screen to roll a plate'],['Россия','Russia'],['типа','types'],['Статистика','Statistics'],['Индекс и секретки','Index & secrets'],['Удача на 30 номеров — 3 $','Luck for 30 plates — 3 $'],['+3 $ за рекламу','+3 $ for watching an ad'],['Звук: вкл','Sound: on'],['Звук: выкл','Sound: off'],['Сбросить прогресс','Reset progress'],
+['Необычный','Uncommon'],['Обычный','Common'],['Редкий','Rare'],['Эпический','Epic'],['Легендарный','Legendary'],['РЕДКИЙ НОМЕР','RARE PLATE'],['ЭПИЧЕСКИЙ НОМЕР!','EPIC PLATE!'],['ЛЕГЕНДАРНЫЙ НОМЕР!!!','LEGENDARY PLATE!!!'],['СЕКРЕТНЫЙ НОМЕР','SECRET PLATE'],
+['Спасибо за просмотр','Thanks for watching'],['Открыто новое','New unlocked'],['Новый рекорд','New record'],['Номер за ','Plate worth '],['Уровень ','Level '],['Новая запись в индексе','New index entry'],['★ Секрет: ','★ Secret: '],['Открыть →','Open →'],['Не хватает $','Not enough $'],['Получай их за уровни и рекламу','Earn them from levels and ads'],['Удача включена','Luck is on'],['Следующие 30 номеров лучше','The next 30 plates roll better'],
+['Блатная серия под названием «три туза».','A prestige series known as "three aces".'],['одинаковые цифры','identical digits'],['одинаковые буквы','identical letters'],['Одинаковые цифры','Identical digits'],['Одинаковые буквы','Identical letters'],['Палиндром букв','Letter palindrome'],['Цифры подряд','Sequential digits'],['Зеркальные цифры','Mirrored digits'],['Цифры совпадают с регионом','Digits match the region'],['Круглый номер: 100–900','Round number: 100–900'],['Круглый номер','Round number'],['Малый номер: 001–009','Low number: 001–009'],['Малый номер','Low number'],
+['Общая','Overall'],['За сессию','Session'],['Всего номеров','Total plates'],['Самый дорогой номер','Most expensive plate'],['Гражданский','Civilian'],['Такси','Taxi'],['Полиция','Police'],['Индекс номеров','Plate index'],['Редкие','Rare'],['Секретки','Secrets'],['Серия «три туза»','"Three aces" series'],['Три одинаковые буквы','Three identical letters'],['Все цифры одинаковые','All digits identical'],['Две одинаковые буквы','Two identical letters'],['Две одинаковые цифры','Two identical digits'],['выпадало: ','rolled: '],['Подсказка: ','Hint: '],
+['Три семёрки','Triple sevens'],['Число зверя… или просто цифры','The beast number… or just digits'],['Число зверя','Number of the beast'],['Нулевой номер','Zero plate'],['Слово «КОТ»','The word "КОТ" (CAT)'],['Экстренная служба','Emergency service'],['Тот самый номер','The Plate'],['Счастливая тройка','A lucky three'],['Ничего. Совсем ничего','Nothing. Absolutely nothing'],['Усатый и полосатый','Whiskered and striped'],['Позвони, если повезло','Call if you get lucky'],['Столица и три удачи','The capital and three lucks'],['Меню','Menu'],['Назад','Back']];
+const EM=Object.fromEntries(EN),RX=new RegExp(EN.map(e=>e[0]).sort((a,b)=>b.length-a.length).map(x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|'),'g'),tr=v=>v.replace(RX,m=>EM[m]);
+function trN(n){if(n.nodeType===3){const w=tr(n.nodeValue);if(w!==n.nodeValue)n.nodeValue=w}else if(n.nodeType===1){const tw=document.createTreeWalker(n,4);let x;while(x=tw.nextNode()){const w=tr(x.nodeValue);if(w!==x.nodeValue)x.nodeValue=w}n.querySelectorAll('[aria-label]').forEach(e=>e.setAttribute('aria-label',tr(e.getAttribute('aria-label'))))}}
+function setLang(l){if(l!=='en')return;lang='en';document.documentElement.lang='en';document.title='Plate Hunt';trN(document.body);
+new MutationObserver(ms=>{for(const m of ms){if(m.type==='characterData')trN(m.target);else m.addedNodes.forEach(trN)}}).observe($('app'),{childList:true,subtree:true,characterData:true});hud()}
+const pickLang=l=>['ru','be','kk','uk','uz'].includes((l||'ru').slice(0,2).toLowerCase())?'ru':'en';
+if(typeof YaGames!=='undefined')YaGames.init().then(s=>{ysdk=s;$('m3').hidden=false;try{setLang(pickLang(s.environment.i18n.lang))}catch(e){}try{s.features.LoadingAPI.ready()}catch(e){}}).catch(()=>setLang(pickLang(navigator.language)));else setLang(pickLang(navigator.language));
+/* ui */
+const hexA=(c,a)=>{const n=parseInt(c.slice(1),16);return`rgba(${n>>16},${n>>8&255},${n&255},${a})`};
+function hud(){$('bal').textContent=fmt(G.bal)+' ₽';$('usd').textContent=G.usd+' $';$('lk').hidden=!G.luck;$('lk').textContent='🍀 '+G.luck}
+function toast(ic,t,s,btn){const d=document.createElement('div');d.className='toast';d.innerHTML=`<span class="ic">${ic}</span><div><b>${t}</b><small>${s}</small></div>`+(btn?'<button>Открыть →</button>':'');if(btn)d.querySelector('button').onclick=()=>{openStats();d.remove()};$('ts').prepend(d);setTimeout(()=>d.remove(),3600);while($('ts').children.length>2)$('ts').lastChild.remove()}
+function plateHTML(p){const D=p.D.join(''),L=p.L,t=p.type,m=t===0?L[0]+D+L[1]+L[2]:t===1?L.join('')+' '+D:L[0]+' '+D;
+return`<div class="plate t${t} pop"><div class="pm">${m}</div><div class="pr"><b class="${p.reg.length>2?'s':''}">${p.reg}</b><i>RUS <span class="flag"></span></i></div></div>`}
+function setR(r){const c=RAR[r];$('rn').textContent=c.n;$('rn').style.color=c.c;$('pv').style.color=r?c.c:'#e6e6ee';$('app').style.setProperty('--g',hexA(c.c,r?.3:.14));
+$('dash').innerHTML=RAR.map((_,i)=>`<i style="${i<=r?'background:'+c.c:''}"></i>`).join('')}
+function roll(){au();let b=null;for(let i=0,n=G.luck>0?3:1;i<n;i++){const p=gen(),a=analyze(p),v=a.fl?Math.max(price(a.m),Math.round(RAR[a.fl].t*(1+Math.random()*.8))):price(a.m);if(!b||v>b.v)b={p,a,v}}
+if(G.luck>0)G.luck--;const ri=ridx(b.v),isRec=b.v>G.best&&G.rolls>0;
+for(const X of[G,S]){X.rolls++;X.rar[ri]++;X.typ[b.p.type]++;X.xp+=10*(ri+1)**2;if(b.v>X.best)X.best=b.v;for(const k of b.a.f){const q=k==='lt3'?'lt':k==='dg3'?'dg':k;X.pat[q]=(X.pat[q]||0)+1}}
+const fresh=b.a.f.filter(k=>!G.dex[k]);for(const k of b.a.f){const d=G.dex[k]||(G.dex[k]={n:0,v:0,s:''});d.n++;if(b.v>=d.v){d.v=b.v;d.s=pstr(b.p)}}
+const l0=lvlOf(G.xp-10*(ri+1)**2)[0],l1=lvlOf(G.xp)[0];G.bal+=b.v;const first=!G.unl[ri];G.unl[ri]=1;hud();save();
+$('hint').hidden=true;$('mid').hidden=false;show(b,ri);
+const dur=300+ri*450+(ri>=3?500:0);
+setTimeout(()=>{for(const k of fresh)toast('📖','Новая запись в индексе',SEC[k]?'★ Секрет: '+SEC[k]:(DEX.find(d=>d[0]===k)||[0,k])[1]);if(first&&ri)toast('🔓','Открыто новое',RAR[ri].n);if(isRec)toast('🏆','Новый рекорд','Номер за '+fmt(b.v)+' ₽',1);if(l1>l0){G.usd++;hud();save();toast('⭐','Уровень '+l1,'+1 $')}},dur);tone(380+ri*90,.05,'square',.05)}
+function show(b,ri){if(anim)cancelAnimationFrame(anim);$('pl').innerHTML=plateHTML(b.p);$('pl').style.filter='';$('ds').style.opacity=0;const isSec=b.a.f.some(k=>SEC[k]);let lt=0;
+const dur=300+ri*450+(ri>=3?500:0),t0=performance.now();let cr=-1;
+const lines=(b.a.f.includes('ace')?'Блатная серия под названием «три туза».<br>':'')+b.a.f.filter(k=>k!=='ace').map(k=>k==='dg3'?b.p.D.length+' одинаковые цифры':SEC[k]?'<b style="color:#facc15">★ Секрет: '+SEC[k]+'</b>':LN[k]).join('<br>');
+const step=t=>{if(ri>=2&&t-lt>70){lt=t;tone(180+((t-t0)/dur)*900,.05,'square',.05)}const k=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-k,3),cv=Math.round(b.v*e),r=ridx(cv);if(r!==cr){cr=r;setR(r)}$('pv').textContent=fmt(cv)+' ₽';
+if(k<1)anim=requestAnimationFrame(step);else{anim=null;$('ds').innerHTML=lines;$('ds').style.opacity=1;if(ri>=2||isSec)epic(b,ri,isSec);else chime(ri)}};anim=requestAnimationFrame(step)}
+/* particles */
+const fx=$('fx'),fc=fx.getContext('2d');let P=[];
+function sz(){fx.width=$('app').clientWidth;fx.height=$('app').clientHeight}addEventListener('resize',sz);sz();
+function burst(c,n){const x=fx.width/2,y=fx.height*.46;for(let i=0;i<n;i++){const a=Math.random()*6.283,s=2+Math.random()*7;P.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-2,l:1,c})}}
+(function lp(){requestAnimationFrame(lp);if(!P.length)return;fc.clearRect(0,0,fx.width,fx.height);fc.globalCompositeOperation='lighter';
+for(let i=P.length-1;i>=0;i--){const p=P[i];p.x+=p.vx;p.y+=p.vy;p.vy+=.18;p.vx*=.99;p.l-=.016;if(p.l<=0){P.splice(i,1);continue}fc.fillStyle=hexA(p.c,p.l*.9);fc.fillRect(p.x-2,p.y-2,4,4);fc.fillStyle=hexA(p.c,p.l*.2);fc.fillRect(p.x-6,p.y-6,12,12)}})();
+/* stats */
+function renderStats(){const X=tab?S:G,[lv,rem]=lvlOf(G.xp),mx=Math.max(1,...X.rar);
+let h=`<div class="hd"><button id="sb" aria-label="Назад">←</button><h2>Статистика</h2></div><div class="tabs"><button class="${tab?'':'on'}" data-t="0">Общая</button><button class="${tab?'on':''}" data-t="1">За сессию</button></div>`;
+if(!tab)h+=`<div style="font-size:13px">Уровень ${lv}</div><div class="bar"><i style="width:${rem/need(lv)*100}%;background:#3b82f6"></i></div>`;
+h+=`<div class="cards"><div class="cd"><b>${fmt(X.rolls)}</b><small>Всего номеров</small></div><div class="cd"><b>${fmt(X.best)} ₽</b><small>Самый дорогой номер</small></div></div>`;
+RAR.forEach((r,i)=>h+=`<div class="rr"><span style="color:${r.c}">${r.n}</span><div class="bar"><i style="width:${X.rar[i]/mx*100}%;background:${r.c}"></i></div><span>${fmt(X.rar[i])}</span></div>`);
+h+='<div style="height:10px"></div>';for(const k in PN)h+=`<div class="row"><span>${PN[k]}</span><span>${X.pat[k]||0}</span></div>`;
+TN.forEach((n,i)=>h+=`<div class="row"><span>${n}</span><span>${X.typ[i]}</span></div>`);$('st').innerHTML=h;
+$('sb').onclick=()=>{$('st').hidden=true};$('st').querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{tab=+b.dataset.t;renderStats()})}
+function openStats(){$('mn').hidden=true;fsAd(()=>{renderStats();$('st').hidden=false})}
+/* menu + input */
+$('mb').onclick=()=>{$('m4').textContent='🔊 Звук: '+(G.mute?'выкл':'вкл');$('mn').hidden=false};
+$('mn').onclick=e=>{if(e.target===$('mn'))$('mn').hidden=true};
+$('chip').onclick=openStats;$('m1').onclick=openStats;
+$('m2').onclick=()=>{if(G.usd<3){toast('💵','Не хватает $','Получай их за уровни и рекламу');return}G.usd-=3;G.luck=30;hud();save();$('mn').hidden=true;toast('🍀','Удача включена','Следующие 30 номеров лучше')};
+$('m3').onclick=()=>{$('mn').hidden=true;rewardAd()};
+$('m4').onclick=()=>{G.mute=!G.mute;save();$('m4').textContent='🔊 Звук: '+(G.mute?'выкл':'вкл')};
+$('m5').onclick=()=>{if(confirm(lang==='en'?'Reset all progress?':'Сбросить весь прогресс?')){G=Object.assign(emp(),{bal:0,usd:0,luck:0,unl:[1,0,0,0,0],mute:G.mute,dex:{}});S=emp();save();hud();$('mid').hidden=true;$('hint').hidden=false;$('mn').hidden=true}};
+$('app').addEventListener('pointerdown',e=>{if(e.target.closest('button,.ov,.toast'))return;roll()});
+addEventListener('keydown',e=>{if((e.code==='Space'||e.code==='Enter')&&$('st').hidden&&$('mn').hidden){e.preventDefault();if(!e.repeat)roll()}});
+const SEC={s777:'Три семёрки',s666:'Число зверя',s000:'Нулевой номер',sKOT:'Слово «КОТ»',s112:'Экстренная служба',sMEGA:'Тот самый номер'};
+const HINT={s777:'Счастливая тройка',s666:'Число зверя… или просто цифры',s000:'Ничего. Совсем ничего',sKOT:'Усатый и полосатый',s112:'Позвони, если повезло',sMEGA:'Столица и три удачи'};
+const DEX=[['sm','Малый номер: 001–009',60],['ace','Серия «три туза»',40],['lt3','Три одинаковые буквы',30],['dg3','Все цифры одинаковые',25],['reg','Цифры совпадают с регионом',18],['rnd','Круглый номер: 100–900',15],['seq','Цифры подряд',12],['pal','Палиндром букв',5],['lt','Две одинаковые буквы',4],['mir','Зеркальные цифры',4],['dg','Две одинаковые цифры',2]];
+const pstr=p=>{const D=p.D.join(''),L=p.L,t=p.type;return(t===0?L[0]+D+L[1]+L[2]:t===1?L.join('')+' '+D:L[0]+' '+D)+' '+p.reg};
+const fan=r=>{tone(98,.9,'sawtooth',.09);[0,4,7,12,16,19,24,28].slice(0,3+r).forEach((x,i)=>tone(330*2**(x/12),.5,'triangle',.13,i*.09));if(r>=4)tone(1318,1.2,'sine',.1,.7)};
+function epic(b,ri,sec){const c=sec&&ri<3?'#facc15':RAR[ri].c,f=$('flash'),a=$('app'),bn=$('bn');
+f.style.background=c;f.className='';void f.offsetWidth;f.className='fl';
+if(ri>=3){a.classList.remove('shake');void a.offsetWidth;a.classList.add('shake');$('ry').style.setProperty('--rc',hexA(c,.28));$('ry').style.opacity=1;setTimeout(()=>{$('ry').style.opacity=0},4200)}
+$('bt').style.color=c;$('bt').textContent=sec?'★ СЕКРЕТНЫЙ НОМЕР ★':['','','РЕДКИЙ НОМЕР','ЭПИЧЕСКИЙ НОМЕР!','ЛЕГЕНДАРНЫЙ НОМЕР!!!'][ri];$('bs').style.color=c;$('bs').textContent='+'+fmt(b.v)+' ₽';
+bn.className='';void bn.offsetWidth;bn.className='on';
+burst(c,ri>=4?260:ri>=3?150:80);if(ri>=3){setTimeout(()=>burst(c,120),250);setTimeout(()=>burst('#ffffff',90),500)}
+$('pl').style.filter='drop-shadow(0 0 '+(10+ri*7)+'px '+c+')';fan(ri);try{navigator.vibrate&&navigator.vibrate(ri>=4?[80,40,80,40,200]:ri>=3?[60,30,120]:40)}catch(e){}}
+let ixt=0;
+function renderIx(){const dx=G.dex,sk=Object.keys(SEC);let h=`<div class="hd"><button id="ib" aria-label="Назад">←</button><h2>Индекс номеров</h2></div><div class="tabs"><button class="${ixt?'':'on'}" data-i="0">Редкие ${DEX.filter(d=>dx[d[0]]).length}/${DEX.length}</button><button class="${ixt?'on':''}" data-i="1">Секретки ${sk.filter(k=>dx[k]).length}/${sk.length}</button></div>`;
+if(!ixt)DEX.forEach(([k,n,m])=>{const d=dx[k],c=m>=40?'#facc15':m>=15?'#a855f7':m>=5?'#60a5fa':'#4ade80';h+=`<div class="dx${d?'':' lk'}"><div class="row" style="border:0;padding:0"><span style="color:${d?'#fff':'#9a9aae'}">${d?'✔':'○'} ${n}</span><b style="color:${c}">×${m}</b></div>${d?`<small>${d.s} · ${fmt(d.v)} ₽ · выпадало: ${d.n}</small>`:''}</div>`});
+else sk.forEach(k=>{const d=dx[k];h+=`<div class="dx${d?'':' lk'}"><div style="color:${d?'#facc15':'#9a9aae'}">${d?'★ '+SEC[k]:'🔒 ???'}</div><small>${d?d.s+' · '+fmt(d.v)+' ₽ · выпадало: '+d.n:'Подсказка: '+HINT[k]}</small></div>`});
+$('ix').innerHTML=h;$('ib').onclick=()=>{$('ix').hidden=true};$('ix').querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{ixt=+b.dataset.i;renderIx()})}
+$('m6').onclick=()=>{$('mn').hidden=true;ixt=0;renderIx();$('ix').hidden=false};
+setR(0);hud();
+</script>
+</body>
+</html>
