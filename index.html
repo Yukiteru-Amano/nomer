@@ -18,11 +18,75 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 #top{position:absolute;top:env(safe-area-inset-top,0);left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:14px 16px;z-index:5;font-weight:600;color:#a9a9bb}
 #top .r{display:flex;gap:12px;align-items:center}#top button{font-size:26px;line-height:1;padding:2px 6px;color:#cfcfdd}
 #usd{color:#9fd4ff}#lk{color:#4ade80;font-size:14px}
-#mid{position:absolute;left:0;right:0;top:50%;transform:translateY(-62%);padding:0 18px;text-align:center}
-#rb{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:14px;padding:9px 14px;margin:0 8px 10px}
-#rn{font-size:12px;font-weight:600}#dash i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:3px;background:rgba(255,255,255,.16)}
+
+#mid{
+  position:absolute;
+  left:0; right:0;
+  top:50%;
+  transform:translateY(-50%);
+  padding:0 18px;
+  text-align:center;
+  z-index:2;
+}
+
+/* ═══════════════════════════════════════════════
+   СТОПКА ИСТОРИИ — ОТДЕЛЬНЫЙ БЛОК НАД РЕДКОСТЬЮ
+   ═══════════════════════════════════════════════ */
+#hist-stack{
+  position:relative;
+  height:72px;
+  margin:0 auto 8px;
+  width:220px;
+  max-width:100%;
+  perspective:900px;
+  pointer-events:none;
+  z-index:1;
+}
+.hist-plate{
+  position:absolute;
+  left:50%;
+  bottom:0;
+  width:200px;
+  margin-left:-100px;
+  transform-origin:50% 100%; /* низ — точка опоры для поворота как карта в колоде */
+  opacity:0;
+  transition: transform .55s cubic-bezier(.2,1.4,.5,1), opacity .55s ease;
+  filter: brightness(.68) saturate(.8) grayscale(.25);
+  will-change: transform, opacity;
+}
+.hist-plate .plate{
+  box-shadow: 0 6px 18px rgba(0,0,0,.6);
+  border-width:2px;
+  border-radius:6px;
+}
+.hist-plate .pm{ font-size:28px; }
+.hist-plate .pr b{ font-size:22px; }
+.hist-plate .pr b.s{ font-size:17px; }
+.hist-plate .pr i{ font-size:7px; }
+.hist-plate.skip{
+  filter: brightness(.42) saturate(.35) grayscale(.75);
+}
+.hist-plate .skip-mark{
+  position:absolute;
+  top:-6px; right:-4px;
+  font-size:11px;
+  filter: drop-shadow(0 0 4px rgba(0,0,0,.95));
+  z-index:5;
+}
+
+/* ═══════════════════════════════════════════════
+   СТРОКА РЕДКОСТИ
+   ═══════════════════════════════════════════════ */
+#rb{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:14px;padding:9px 14px;margin:0 8px 10px;position:relative;z-index:6}
+#rn{font-size:12px;font-weight:600}
+#dash i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:3px;background:rgba(255,255,255,.16)}
 #rl{display:flex;flex-direction:column;align-items:flex-start;gap:4px}
 #pv{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+
+/* ═══════════════════════════════════════════════
+   ГЛАВНАЯ ПЛАШКА
+   ═══════════════════════════════════════════════ */
+#pl-wrap{ position:relative; padding:0 0 4px; }
 .plate{container-type:inline-size;display:flex;aspect-ratio:4.6;border-radius:9px;border:3px solid #1b1b1b;background:linear-gradient(#f4f4f4,#d4d4d4);color:#141414;box-shadow:0 8px 30px rgba(0,0,0,.6),inset 0 0 0 2px rgba(255,255,255,.5);overflow:hidden}
 .plate.t1{background:linear-gradient(#ffc61a,#e6a800)}.plate.t2{color:#0b2a80}
 .pm{flex:1;display:flex;align-items:center;justify-content:center;font:700 15.5cqw/1 "Arial Narrow","Roboto Condensed","Helvetica Neue",Arial,sans-serif;letter-spacing:.01em;white-space:pre}
@@ -31,7 +95,8 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 .pr i{font:700 3.6cqw/1 Arial,sans-serif;font-style:normal;display:flex;align-items:center;gap:1.2cqw}
 .flag{width:5.2cqw;height:3.5cqw;border:1px solid #222;background:linear-gradient(#fff 33%,#0039a6 33% 66%,#d52b1e 66%)}
 .pop{animation:pop .22s ease-out}@keyframes pop{from{transform:scale(.9);opacity:.4}to{transform:none;opacity:1}}
-#ds{margin-top:18px;color:#c9c9d6;line-height:1.55;font-size:15px;min-height:76px;opacity:0;transition:opacity .35s}
+
+#ds{margin-top:14px;color:#c9c9d6;line-height:1.55;font-size:15px;min-height:60px;opacity:0;transition:opacity .35s}
 #hint{position:absolute;left:0;right:0;top:50%;text-align:center;color:var(--muted);animation:bl 1.6s infinite}@keyframes bl{50%{opacity:.35}}
 #chip{position:absolute;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0));transform:translateX(-50%);display:flex;gap:8px;align-items:center;background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:14px;padding:9px 16px;font-weight:600;z-index:4}
 #chip small{color:var(--muted);font-weight:400}.flag.b{width:20px;height:14px}
@@ -48,12 +113,13 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 .row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-size:13px;color:#cfcfdd;border-bottom:1px solid rgba(255,255,255,.04)}.row span:last-child{color:var(--muted)}
 .rr{display:grid;grid-template-columns:96px 1fr 44px;gap:10px;align-items:center;font-size:12px;margin:7px 0}.rr .bar{margin:0}.rr span:last-child{text-align:right;color:var(--muted)}
 #mn{background:rgba(0,0,0,.6);display:flex;align-items:flex-start}
-#mn .sh{width:78%;max-width:320px;height:100%;background:#12121a;padding:calc(18px + env(safe-area-inset-top,0)) 16px 16px;display:flex;flex-direction:column;gap:10px}
+#mn .sh{width:78%;max-width:320px;height:100%;background:#12121a;padding:calc(18px + env(safe-area-inset-top,0)) 16px 16px;display:flex;flex-direction:column;gap:10px;overflow-y:auto}
 #mn .sh button{text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px 14px;font-size:14px}
 #mn .sh button:disabled{opacity:.45}
 button:focus-visible{outline:2px solid #facc15;outline-offset:2px}
 #flash{position:absolute;inset:0;pointer-events:none;z-index:7;opacity:0}.fl{animation:fl .8s ease-out}@keyframes fl{0%{opacity:.9}100%{opacity:0}}
 .shake{animation:sk .55s}@keyframes sk{10%{transform:translate(-9px,5px)}30%{transform:translate(9px,-6px)}50%{transform:translate(-7px,-5px)}70%{transform:translate(6px,6px)}90%{transform:translate(-3px,2px)}}
+.shake-hard{animation:skh .9s}@keyframes skh{0%{transform:translate(0,0)scale(1)}10%{transform:translate(-14px,8px)scale(1.01)}20%{transform:translate(14px,-10px)}30%{transform:translate(-12px,-8px)}40%{transform:translate(10px,10px)}50%{transform:translate(-8px,6px)}60%{transform:translate(8px,-6px)}70%{transform:translate(-6px,4px)}80%{transform:translate(4px,-3px)}90%{transform:translate(-2px,1px)}100%{transform:translate(0,0)}}
 #bn{position:absolute;left:0;right:0;top:17%;text-align:center;z-index:8;pointer-events:none;opacity:0}#bn.on{animation:bn 2.4s ease-out forwards}
 @keyframes bn{0%{transform:scale(2.6);opacity:0}10%{transform:scale(1);opacity:1}80%{opacity:1}100%{opacity:0;transform:translateY(-16px) scale(1.04)}}
 #bt{font:900 30px/1.1 "Segoe UI",system-ui,sans-serif;letter-spacing:.06em;text-shadow:0 0 16px currentColor,0 0 44px currentColor}#bs{margin-top:8px;font:800 20px system-ui;text-shadow:0 0 14px currentColor}
@@ -63,19 +129,30 @@ button:focus-visible{outline:2px solid #facc15;outline-offset:2px}
 </head>
 <body>
 <div id="app">
-  <div id="glow"></div><canvas id="fx"></canvas><div id="ry"></div><div id="flash"></div><div id="bn"><div id="bt"></div><div id="bs"></div></div>
+  <div id="glow"></div>
+  <canvas id="fx"></canvas>
+  <div id="ry"></div>
+  <div id="flash"></div>
+  <div id="bn"><div id="bt"></div><div id="bs"></div></div>
   <div id="top"><button id="mb" aria-label="Меню">☰</button><div class="r"><span id="lk" hidden></span><span id="bal">0 ₽</span><span id="usd">0 $</span></div></div>
   <div id="ts"></div>
   <div id="hint">Нажми на экран — выпадет номер</div>
   <div id="mid" hidden>
+    <div id="hist-stack"></div>
     <div id="rb"><div id="rl"><span id="rn"></span><span id="dash"></span></div><span id="pv">0 ₽</span></div>
-    <div id="pl"></div><div id="ds"></div>
+    <div id="pl-wrap"><div id="pl"></div></div>
+    <div id="ds"></div>
   </div>
   <button id="chip"><span class="flag b"></span> Россия <small>3 типа</small></button>
-  <div id="st" class="ov" hidden></div><div id="ix" class="ov" hidden></div>
+  <div id="st" class="ov" hidden></div>
+  <div id="ix" class="ov" hidden></div>
   <div id="mn" class="ov" hidden><div class="sh">
-    <button id="m1">📊 Статистика</button><button id="m6">📖 Индекс и секретки</button><button id="m2">🍀 Удача на 30 номеров — 3 $</button>
-    <button id="m3" hidden>📺 +3 $ за рекламу</button><button id="m4">🔊 Звук: вкл</button><button id="m5">🗑 Сбросить прогресс</button>
+    <button id="m1">📊 Статистика</button>
+    <button id="m6">📖 Индекс и секретки</button>
+    <button id="m2">🍀 Удача на 30 номеров — 3 $</button>
+    <button id="m3" hidden>📺 +3 $ за рекламу</button>
+    <button id="m4">🔊 Звук: вкл</button>
+    <button id="m5">🗑 Сбросить прогресс</button>
   </div></div>
 </div>
 <script>
@@ -108,72 +185,244 @@ return{f,m,fl}}
 const ridx=v=>{let r=0;RAR.forEach((x,i)=>{if(v>=x.t)r=i});return r};
 const price=m=>Math.round((100+R(900))*m*(.9+Math.random()*.2));
 /*END*/
-let lang='ru';const fmt=n=>n.toLocaleString(lang==='en'?'en-US':'ru-RU');
+const fmt=n=>n.toLocaleString('ru-RU');
 const LN={lt3:'3 одинаковые буквы',lt:'2 одинаковые буквы',dg:'2 одинаковые цифры',pal:'Палиндром букв',seq:'Цифры подряд',mir:'Зеркальные цифры',rnd:'Круглый номер',sm:'Малый номер',reg:'Цифры совпадают с регионом'};
-const emp=()=>({rolls:0,best:0,xp:0,rar:[0,0,0,0,0],pat:{},typ:[0,0,0]});
+const emp=()=>({rolls:0,best:0,xp:0,rar:[0,0,0,0,0],pat:{},typ:[0,0,0],skips:0,bestPer:[0,0,0,0,0]});
 let G=Object.assign(emp(),{bal:0,usd:0,luck:0,unl:[1,0,0,0,0],mute:false,dex:{}}),S=emp(),tab=0,anim=null,lastAd=Date.now(),adBusy=false,ysdk=null,ac=null;
-try{const j=JSON.parse(localStorage.getItem('plates_v1')||'null');if(j)Object.assign(G,j)}catch(e){}if(!G.dex)G.dex={};
+try{const j=JSON.parse(localStorage.getItem('plates_v1')||'null');if(j)Object.assign(G,j)}catch(e){}
+if(!G.dex)G.dex={};
+if(!G.bestPer)G.bestPer=[0,0,0,0,0];
+if(!G.skips)G.skips=0;
 const save=()=>{try{localStorage.setItem('plates_v1',JSON.stringify(G))}catch(e){}};
 const need=l=>300*l*l,lvlOf=xp=>{let l=1;while(xp>=need(l)){xp-=need(l);l++}return[l,xp]};
+
+/* ═══════════════════════════════════════
+   СТОПКА ИСТОРИИ НАД РЕДКОСТЬЮ
+   ═══════════════════════════════════════ */
+const HIST_MAX = 6;
+let history = [];        // {p, skipped, jitter}
+let inputLocked = false;
+let lockTimer = null;
+
+function pushHistory(p, skipped){
+  // Угол и сдвиг генерим заранее — чтобы плашка не крутилась при перерендере
+  const jitter = {
+    angle: (Math.random() * 2 - 1) * 12,       // -12°..+12°
+    offsetX: (Math.random() * 2 - 1) * 12,     // -12..+12 px
+    offsetY: (Math.random() * 2 - 1) * 6       // -6..+6 px
+  };
+  history.push({p, skipped, jitter});
+  if(history.length > HIST_MAX) history.shift();
+  renderHistory();
+  if(skipped){
+    G.skips = (G.skips||0) + 1;
+    save();
+  }
+}
+function renderHistory(){
+  const stack = $('hist-stack');
+  stack.innerHTML = '';
+  // Показываем все номера КРОМЕ последнего (последний — он же главный снизу)
+  const visible = history.slice(0, -1);
+  const n = visible.length;
+  visible.forEach((item, i)=>{
+    // depth: 0 — самый свежий (лежит ВЫШЕ всех в стопке, ближе к верху блока),
+    //        n-1 — самый старый (в самом низу блока)
+    const depth = n - 1 - i;
+    const el = document.createElement('div');
+    el.className = 'hist-plate';
+    if(item.skipped) el.classList.add('skip');
+    el.innerHTML = plateHTML(item.p);
+    if(item.skipped){
+      const m = document.createElement('span');
+      m.className = 'skip-mark';
+      m.textContent = '🙈';
+      el.appendChild(m);
+    }
+    // z-index: свежие выше, старые ниже
+    el.style.zIndex = 10 + i;
+    // Стартовая позиция — уменьшенная, из-под низа
+    el.style.transform = `translate(0, 10px) scale(.6) rotate(0deg)`;
+    el.style.opacity = '0';
+    stack.appendChild(el);
+    // Финальная позиция: свежие выше по Y, старые ниже
+    // depth 0 = самый свежий = верх блока
+    // depth max = старый = низ блока
+    const dx = item.jitter.offsetX;
+    // Верхние = -depth*14 (уходят вверх блока), нижние = 0
+    const dy = -8 - depth * 11 + item.jitter.offsetY;
+    const scale = 0.95 - depth * 0.02;
+    const rot = item.jitter.angle;
+    const op = Math.max(0.35, 0.85 - depth * 0.07);
+    const delay = i * 25;
+    setTimeout(()=>{
+      el.style.transform = `translate(${dx}px, ${dy}px) scale(${scale}) rotate(${rot}deg)`;
+      el.style.opacity = op;
+    }, delay);
+  });
+}
+function clearHistory(){
+  history = [];
+  $('hist-stack').innerHTML = '';
+}
+
+/* ═══════════════════════════════════════
+   БЛОКИРОВКА
+   ═══════════════════════════════════════ */
+function lockInput(duration){
+  inputLocked = true;
+  if(lockTimer) clearTimeout(lockTimer);
+  lockTimer = setTimeout(()=>{
+    inputLocked = false;
+    lockTimer = null;
+  }, duration);
+}
+function onSkip(){
+  const p = gen();
+  pushHistory(p, true);
+  tone(220, 0.08, 'square', 0.07);
+  setTimeout(()=>tone(170, 0.08, 'square', 0.07), 65);
+  const pl = $('pl');
+  pl.classList.remove('shake');
+  void pl.offsetWidth;
+  pl.classList.add('shake');
+}
+
 /* audio */
 function au(){if(!ac){try{ac=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(ac&&ac.state==='suspended')ac.resume();return ac}
 function tone(f,d,ty='sine',v=.12,t0=0){if(G.mute||adBusy)return;const a=au();if(!a)return;const o=a.createOscillator(),g=a.createGain(),t=a.currentTime+t0;o.type=ty;o.frequency.value=f;g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+d)}
 const chime=r=>{if(r<1)return;[0,4,7,12,16].slice(0,r+1).forEach((s,i)=>tone(440*2**(s/12),.3,'sine',.13,i*.08))};
 document.addEventListener('visibilitychange',()=>{if(ac)document.hidden?ac.suspend():ac.resume()});
 addEventListener('contextmenu',e=>e.preventDefault());
+
 /* yandex */
 function fsAd(cb){if(!ysdk||Date.now()-lastAd<90000)return cb();ysdk.adv.showFullscreenAdv({callbacks:{onOpen:()=>{adBusy=true},onClose:()=>{adBusy=false;lastAd=Date.now();cb()},onError:()=>{adBusy=false;cb()}}})}
 function rewardAd(){if(!ysdk)return;let ok=false;ysdk.adv.showRewardedVideo({callbacks:{onOpen:()=>{adBusy=true},onRewarded:()=>{ok=true},onClose:()=>{adBusy=false;lastAd=Date.now();if(ok){G.usd+=3;hud();save();toast('💵','+3 $','Спасибо за просмотр')}},onError:()=>{adBusy=false}}})}
-/* i18n: язык берём из Yandex SDK (ru/be/kk/uk/uz -> русский, остальные -> английский) */
-const EN=[['Нажми на экран — выпадет номер','Tap the screen to roll a plate'],['Россия','Russia'],['типа','types'],['Статистика','Statistics'],['Индекс и секретки','Index & secrets'],['Удача на 30 номеров — 3 $','Luck for 30 plates — 3 $'],['+3 $ за рекламу','+3 $ for watching an ad'],['Звук: вкл','Sound: on'],['Звук: выкл','Sound: off'],['Сбросить прогресс','Reset progress'],
-['Необычный','Uncommon'],['Обычный','Common'],['Редкий','Rare'],['Эпический','Epic'],['Легендарный','Legendary'],['РЕДКИЙ НОМЕР','RARE PLATE'],['ЭПИЧЕСКИЙ НОМЕР!','EPIC PLATE!'],['ЛЕГЕНДАРНЫЙ НОМЕР!!!','LEGENDARY PLATE!!!'],['СЕКРЕТНЫЙ НОМЕР','SECRET PLATE'],
-['Спасибо за просмотр','Thanks for watching'],['Открыто новое','New unlocked'],['Новый рекорд','New record'],['Номер за ','Plate worth '],['Уровень ','Level '],['Новая запись в индексе','New index entry'],['★ Секрет: ','★ Secret: '],['Открыть →','Open →'],['Не хватает $','Not enough $'],['Получай их за уровни и рекламу','Earn them from levels and ads'],['Удача включена','Luck is on'],['Следующие 30 номеров лучше','The next 30 plates roll better'],
-['Блатная серия под названием «три туза».','A prestige series known as "three aces".'],['одинаковые цифры','identical digits'],['одинаковые буквы','identical letters'],['Одинаковые цифры','Identical digits'],['Одинаковые буквы','Identical letters'],['Палиндром букв','Letter palindrome'],['Цифры подряд','Sequential digits'],['Зеркальные цифры','Mirrored digits'],['Цифры совпадают с регионом','Digits match the region'],['Круглый номер: 100–900','Round number: 100–900'],['Круглый номер','Round number'],['Малый номер: 001–009','Low number: 001–009'],['Малый номер','Low number'],
-['Общая','Overall'],['За сессию','Session'],['Всего номеров','Total plates'],['Самый дорогой номер','Most expensive plate'],['Гражданский','Civilian'],['Такси','Taxi'],['Полиция','Police'],['Индекс номеров','Plate index'],['Редкие','Rare'],['Секретки','Secrets'],['Серия «три туза»','"Three aces" series'],['Три одинаковые буквы','Three identical letters'],['Все цифры одинаковые','All digits identical'],['Две одинаковые буквы','Two identical letters'],['Две одинаковые цифры','Two identical digits'],['выпадало: ','rolled: '],['Подсказка: ','Hint: '],
-['Три семёрки','Triple sevens'],['Число зверя… или просто цифры','The beast number… or just digits'],['Число зверя','Number of the beast'],['Нулевой номер','Zero plate'],['Слово «КОТ»','The word "КОТ" (CAT)'],['Экстренная служба','Emergency service'],['Тот самый номер','The Plate'],['Счастливая тройка','A lucky three'],['Ничего. Совсем ничего','Nothing. Absolutely nothing'],['Усатый и полосатый','Whiskered and striped'],['Позвони, если повезло','Call if you get lucky'],['Столица и три удачи','The capital and three lucks'],['Меню','Menu'],['Назад','Back']];
-const EM=Object.fromEntries(EN),RX=new RegExp(EN.map(e=>e[0]).sort((a,b)=>b.length-a.length).map(x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|'),'g'),tr=v=>v.replace(RX,m=>EM[m]);
-function trN(n){if(n.nodeType===3){const w=tr(n.nodeValue);if(w!==n.nodeValue)n.nodeValue=w}else if(n.nodeType===1){const tw=document.createTreeWalker(n,4);let x;while(x=tw.nextNode()){const w=tr(x.nodeValue);if(w!==x.nodeValue)x.nodeValue=w}n.querySelectorAll('[aria-label]').forEach(e=>e.setAttribute('aria-label',tr(e.getAttribute('aria-label'))))}}
-function setLang(l){if(l!=='en')return;lang='en';document.documentElement.lang='en';document.title='Plate Hunt';trN(document.body);
-new MutationObserver(ms=>{for(const m of ms){if(m.type==='characterData')trN(m.target);else m.addedNodes.forEach(trN)}}).observe($('app'),{childList:true,subtree:true,characterData:true});hud()}
-const pickLang=l=>['ru','be','kk','uk','uz'].includes((l||'ru').slice(0,2).toLowerCase())?'ru':'en';
-if(typeof YaGames!=='undefined')YaGames.init().then(s=>{ysdk=s;$('m3').hidden=false;try{setLang(pickLang(s.environment.i18n.lang))}catch(e){}try{s.features.LoadingAPI.ready()}catch(e){}}).catch(()=>setLang(pickLang(navigator.language)));else setLang(pickLang(navigator.language));
+if(typeof YaGames!=='undefined')YaGames.init().then(s=>{ysdk=s;$('m3').hidden=false;try{s.features.LoadingAPI.ready()}catch(e){}}).catch(()=>{});
+
 /* ui */
 const hexA=(c,a)=>{const n=parseInt(c.slice(1),16);return`rgba(${n>>16},${n>>8&255},${n&255},${a})`};
 function hud(){$('bal').textContent=fmt(G.bal)+' ₽';$('usd').textContent=G.usd+' $';$('lk').hidden=!G.luck;$('lk').textContent='🍀 '+G.luck}
 function toast(ic,t,s,btn){const d=document.createElement('div');d.className='toast';d.innerHTML=`<span class="ic">${ic}</span><div><b>${t}</b><small>${s}</small></div>`+(btn?'<button>Открыть →</button>':'');if(btn)d.querySelector('button').onclick=()=>{openStats();d.remove()};$('ts').prepend(d);setTimeout(()=>d.remove(),3600);while($('ts').children.length>2)$('ts').lastChild.remove()}
 function plateHTML(p){const D=p.D.join(''),L=p.L,t=p.type,m=t===0?L[0]+D+L[1]+L[2]:t===1?L.join('')+' '+D:L[0]+' '+D;
-return`<div class="plate t${t} pop"><div class="pm">${m}</div><div class="pr"><b class="${p.reg.length>2?'s':''}">${p.reg}</b><i>RUS <span class="flag"></span></i></div></div>`}
+return`<div class="plate t${t}"><div class="pm">${m}</div><div class="pr"><b class="${p.reg.length>2?'s':''}">${p.reg}</b><i>RUS <span class="flag"></span></i></div></div>`}
 function setR(r){const c=RAR[r];$('rn').textContent=c.n;$('rn').style.color=c.c;$('pv').style.color=r?c.c:'#e6e6ee';$('app').style.setProperty('--g',hexA(c.c,r?.3:.14));
 $('dash').innerHTML=RAR.map((_,i)=>`<i style="${i<=r?'background:'+c.c:''}"></i>`).join('')}
-function roll(){au();let b=null;for(let i=0,n=G.luck>0?3:1;i<n;i++){const p=gen(),a=analyze(p),v=a.fl?Math.max(price(a.m),Math.round(RAR[a.fl].t*(1+Math.random()*.8))):price(a.m);if(!b||v>b.v)b={p,a,v}}
-if(G.luck>0)G.luck--;const ri=ridx(b.v),isRec=b.v>G.best&&G.rolls>0;
-for(const X of[G,S]){X.rolls++;X.rar[ri]++;X.typ[b.p.type]++;X.xp+=10*(ri+1)**2;if(b.v>X.best)X.best=b.v;for(const k of b.a.f){const q=k==='lt3'?'lt':k==='dg3'?'dg':k;X.pat[q]=(X.pat[q]||0)+1}}
-const fresh=b.a.f.filter(k=>!G.dex[k]);for(const k of b.a.f){const d=G.dex[k]||(G.dex[k]={n:0,v:0,s:''});d.n++;if(b.v>=d.v){d.v=b.v;d.s=pstr(b.p)}}
-const l0=lvlOf(G.xp-10*(ri+1)**2)[0],l1=lvlOf(G.xp)[0];G.bal+=b.v;const first=!G.unl[ri];G.unl[ri]=1;hud();save();
-$('hint').hidden=true;$('mid').hidden=false;show(b,ri);
-const dur=300+ri*450+(ri>=3?500:0);
-setTimeout(()=>{for(const k of fresh)toast('📖','Новая запись в индексе',SEC[k]?'★ Секрет: '+SEC[k]:(DEX.find(d=>d[0]===k)||[0,k])[1]);if(first&&ri)toast('🔓','Открыто новое',RAR[ri].n);if(isRec)toast('🏆','Новый рекорд','Номер за '+fmt(b.v)+' ₽',1);if(l1>l0){G.usd++;hud();save();toast('⭐','Уровень '+l1,'+1 $')}},dur);tone(380+ri*90,.05,'square',.05)}
-function show(b,ri){if(anim)cancelAnimationFrame(anim);$('pl').innerHTML=plateHTML(b.p);$('pl').style.filter='';$('ds').style.opacity=0;const isSec=b.a.f.some(k=>SEC[k]);let lt=0;
-const dur=300+ri*450+(ri>=3?500:0),t0=performance.now();let cr=-1;
-const lines=(b.a.f.includes('ace')?'Блатная серия под названием «три туза».<br>':'')+b.a.f.filter(k=>k!=='ace').map(k=>k==='dg3'?b.p.D.length+' одинаковые цифры':SEC[k]?'<b style="color:#facc15">★ Секрет: '+SEC[k]+'</b>':LN[k]).join('<br>');
-const step=t=>{if(ri>=2&&t-lt>70){lt=t;tone(180+((t-t0)/dur)*900,.05,'square',.05)}const k=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-k,3),cv=Math.round(b.v*e),r=ridx(cv);if(r!==cr){cr=r;setR(r)}$('pv').textContent=fmt(cv)+' ₽';
-if(k<1)anim=requestAnimationFrame(step);else{anim=null;$('ds').innerHTML=lines;$('ds').style.opacity=1;if(ri>=2||isSec)epic(b,ri,isSec);else chime(ri)}};anim=requestAnimationFrame(step)}
+
+function roll(){
+  if(inputLocked){
+    onSkip();
+    return;
+  }
+  au();
+  let b=null;
+  for(let i=0,n=G.luck>0?3:1;i<n;i++){
+    const p=gen(),a=analyze(p);
+    const v=a.fl?Math.max(price(a.m),Math.round(RAR[a.fl].t*(1+Math.random()*.8))):price(a.m);
+    if(!b||v>b.v)b={p,a,v};
+  }
+  if(G.luck>0)G.luck--;
+  const ri=ridx(b.v),isRec=b.v>G.best&&G.rolls>0;
+  pushHistory(b.p, false);
+  if(ri >= 3){
+    lockInput(ri >= 4 ? 4000 : 3200);
+  }
+  for(const X of[G,S]){
+    X.rolls++;X.rar[ri]++;X.typ[b.p.type]++;
+    X.xp+=10*(ri+1)**2;
+    if(b.v>X.best)X.best=b.v;
+    if(b.v > X.bestPer[ri]) X.bestPer[ri] = b.v;
+    for(const k of b.a.f){const q=k==='lt3'?'lt':k==='dg3'?'dg':k;X.pat[q]=(X.pat[q]||0)+1}
+  }
+  const fresh=b.a.f.filter(k=>!G.dex[k]);
+  for(const k of b.a.f){const d=G.dex[k]||(G.dex[k]={n:0,v:0,s:''});d.n++;if(b.v>=d.v){d.v=b.v;d.s=pstr(b.p)}}
+  const l0=lvlOf(G.xp-10*(ri+1)**2)[0],l1=lvlOf(G.xp)[0];
+  G.bal+=b.v;
+  const first=!G.unl[ri];G.unl[ri]=1;
+  hud();save();
+  $('hint').hidden=true;$('mid').hidden=false;
+  show(b,ri);
+  const dur=300+ri*450+(ri>=3?500:0);
+  setTimeout(()=>{
+    for(const k of fresh)toast('📖','Новая запись в индексе',SEC[k]?'★ Секрет: '+SEC[k]:(DEX.find(d=>d[0]===k)||[0,k])[1]);
+    if(first&&ri)toast('🔓','Открыто новое',RAR[ri].n);
+    if(isRec)toast('🏆','Новый рекорд','Номер за '+fmt(b.v)+' ₽',1);
+    if(l1>l0){G.usd++;hud();save();toast('⭐','Уровень '+l1,'+1 $')}
+  },dur);
+  tone(380+ri*90,.05,'square',.05);
+}
+function pstr(p){const D=p.D.join(''),L=p.L,t=p.type;return(t===0?L[0]+D+L[1]+L[2]:t===1?L.join('')+' '+D:L[0]+' '+D)+' '+p.reg}
+
+function show(b,ri){
+  if(anim)cancelAnimationFrame(anim);
+  $('pl').innerHTML=plateHTML(b.p);
+  $('pl').classList.add('pop');
+  setTimeout(()=>$('pl').classList.remove('pop'), 250);
+  $('pl').style.filter='';
+  $('ds').style.opacity=0;
+  const isSec=b.a.f.some(k=>SEC[k]);
+  let lt=0;
+  const dur=300+ri*450+(ri>=3?500:0),t0=performance.now();
+  let cr=-1;
+  const lines=(b.a.f.includes('ace')?'Блатная серия под названием «три туза».<br>':'')+b.a.f.filter(k=>k!=='ace').map(k=>k==='dg3'?b.p.D.length+' одинаковые цифры':SEC[k]?'<b style="color:#facc15">★ Секрет: '+SEC[k]+'</b>':LN[k]).join('<br>');
+  const step=t=>{
+    if(ri>=2&&t-lt>70){lt=t;tone(180+((t-t0)/dur)*900,.05,'square',.05)}
+    const k=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-k,3),cv=Math.round(b.v*e),r=ridx(cv);
+    if(r!==cr){cr=r;setR(r)}
+    $('pv').textContent=fmt(cv)+' ₽';
+    if(k<1)anim=requestAnimationFrame(step);
+    else{
+      anim=null;
+      $('ds').innerHTML=lines;
+      $('ds').style.opacity=1;
+      if(ri>=2||isSec)epic(b,ri,isSec);
+      else chime(ri);
+    }
+  };
+  anim=requestAnimationFrame(step);
+}
+
 /* particles */
 const fx=$('fx'),fc=fx.getContext('2d');let P=[];
-function sz(){fx.width=$('app').clientWidth;fx.height=$('app').clientHeight}addEventListener('resize',sz);sz();
+function sz(){fx.width=$('app').clientWidth;fx.height=$('app').clientHeight}
+addEventListener('resize',sz);sz();
 function burst(c,n){const x=fx.width/2,y=fx.height*.46;for(let i=0;i<n;i++){const a=Math.random()*6.283,s=2+Math.random()*7;P.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-2,l:1,c})}}
-(function lp(){requestAnimationFrame(lp);if(!P.length)return;fc.clearRect(0,0,fx.width,fx.height);fc.globalCompositeOperation='lighter';
-for(let i=P.length-1;i>=0;i--){const p=P[i];p.x+=p.vx;p.y+=p.vy;p.vy+=.18;p.vx*=.99;p.l-=.016;if(p.l<=0){P.splice(i,1);continue}fc.fillStyle=hexA(p.c,p.l*.9);fc.fillRect(p.x-2,p.y-2,4,4);fc.fillStyle=hexA(p.c,p.l*.2);fc.fillRect(p.x-6,p.y-6,12,12)}})();
+(function lp(){
+  requestAnimationFrame(lp);
+  if(!P.length)return;
+  fc.clearRect(0,0,fx.width,fx.height);
+  fc.globalCompositeOperation='lighter';
+  for(let i=P.length-1;i>=0;i--){
+    const p=P[i];
+    p.x+=p.vx;p.y+=p.vy;p.vy+=.18;p.vx*=.99;p.l-=.016;
+    if(p.l<=0){P.splice(i,1);continue}
+    fc.fillStyle=hexA(p.c,p.l*.9);fc.fillRect(p.x-2,p.y-2,4,4);
+    fc.fillStyle=hexA(p.c,p.l*.2);fc.fillRect(p.x-6,p.y-6,12,12);
+  }
+})();
+
 /* stats */
-function renderStats(){const X=tab?S:G,[lv,rem]=lvlOf(G.xp),mx=Math.max(1,...X.rar);
-let h=`<div class="hd"><button id="sb" aria-label="Назад">←</button><h2>Статистика</h2></div><div class="tabs"><button class="${tab?'':'on'}" data-t="0">Общая</button><button class="${tab?'on':''}" data-t="1">За сессию</button></div>`;
-if(!tab)h+=`<div style="font-size:13px">Уровень ${lv}</div><div class="bar"><i style="width:${rem/need(lv)*100}%;background:#3b82f6"></i></div>`;
-h+=`<div class="cards"><div class="cd"><b>${fmt(X.rolls)}</b><small>Всего номеров</small></div><div class="cd"><b>${fmt(X.best)} ₽</b><small>Самый дорогой номер</small></div></div>`;
-RAR.forEach((r,i)=>h+=`<div class="rr"><span style="color:${r.c}">${r.n}</span><div class="bar"><i style="width:${X.rar[i]/mx*100}%;background:${r.c}"></i></div><span>${fmt(X.rar[i])}</span></div>`);
-h+='<div style="height:10px"></div>';for(const k in PN)h+=`<div class="row"><span>${PN[k]}</span><span>${X.pat[k]||0}</span></div>`;
-TN.forEach((n,i)=>h+=`<div class="row"><span>${n}</span><span>${X.typ[i]}</span></div>`);$('st').innerHTML=h;
-$('sb').onclick=()=>{$('st').hidden=true};$('st').querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{tab=+b.dataset.t;renderStats()})}
+function renderStats(){
+  const X=tab?S:G,[lv,rem]=lvlOf(G.xp),mx=Math.max(1,...X.rar);
+  let h=`<div class="hd"><button id="sb" aria-label="Назад">←</button><h2>Статистика</h2></div><div class="tabs"><button class="${tab?'':'on'}" data-t="0">Общая</button><button class="${tab?'on':''}" data-t="1">За сессию</button></div>`;
+  if(!tab)h+=`<div style="font-size:13px">Уровень ${lv}</div><div class="bar"><i style="width:${rem/need(lv)*100}%;background:#3b82f6"></i></div>`;
+  h+=`<div class="cards"><div class="cd"><b>${fmt(X.rolls)}</b><small>Всего номеров</small></div><div class="cd"><b>${fmt(X.best)} ₽</b><small>Самый дорогой</small></div></div>`;
+  h+=`<div class="row"><span>🙈 Пропущено номеров</span><span>${fmt(G.skips||0)}</span></div>`;
+  RAR.forEach((r,i)=>h+=`<div class="rr"><span style="color:${r.c}">${r.n}</span><div class="bar"><i style="width:${X.rar[i]/mx*100}%;background:${r.c}"></i></div><span>${fmt(X.rar[i])}</span></div>`);
+  h+=`<div style="height:14px"></div><div style="font-size:13px;font-weight:700;margin-bottom:6px">🏆 Лучший номер по редкости</div>`;
+  RAR.forEach((r,i)=>{
+    const best = X.bestPer ? X.bestPer[i] : 0;
+    h+=`<div class="row"><span style="color:${r.c};${best?'':'opacity:.5'}">${r.n}</span><span>${best?fmt(best)+' ₽':'—'}</span></div>`;
+  });
+  h+='<div style="height:14px"></div>';
+  for(const k in PN)h+=`<div class="row"><span>${PN[k]}</span><span>${X.pat[k]||0}</span></div>`;
+  TN.forEach((n,i)=>h+=`<div class="row"><span>${n}</span><span>${X.typ[i]}</span></div>`);
+  $('st').innerHTML=h;
+  $('sb').onclick=()=>{$('st').hidden=true};
+  $('st').querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{tab=+b.dataset.t;renderStats()});
+}
 function openStats(){$('mn').hidden=true;fsAd(()=>{renderStats();$('st').hidden=false})}
+
 /* menu + input */
 $('mb').onclick=()=>{$('m4').textContent='🔊 Звук: '+(G.mute?'выкл':'вкл');$('mn').hidden=false};
 $('mn').onclick=e=>{if(e.target===$('mn'))$('mn').hidden=true};
@@ -181,27 +430,68 @@ $('chip').onclick=openStats;$('m1').onclick=openStats;
 $('m2').onclick=()=>{if(G.usd<3){toast('💵','Не хватает $','Получай их за уровни и рекламу');return}G.usd-=3;G.luck=30;hud();save();$('mn').hidden=true;toast('🍀','Удача включена','Следующие 30 номеров лучше')};
 $('m3').onclick=()=>{$('mn').hidden=true;rewardAd()};
 $('m4').onclick=()=>{G.mute=!G.mute;save();$('m4').textContent='🔊 Звук: '+(G.mute?'выкл':'вкл')};
-$('m5').onclick=()=>{if(confirm(lang==='en'?'Reset all progress?':'Сбросить весь прогресс?')){G=Object.assign(emp(),{bal:0,usd:0,luck:0,unl:[1,0,0,0,0],mute:G.mute,dex:{}});S=emp();save();hud();$('mid').hidden=true;$('hint').hidden=false;$('mn').hidden=true}};
-$('app').addEventListener('pointerdown',e=>{if(e.target.closest('button,.ov,.toast'))return;roll()});
-addEventListener('keydown',e=>{if((e.code==='Space'||e.code==='Enter')&&$('st').hidden&&$('mn').hidden){e.preventDefault();if(!e.repeat)roll()}});
+$('m5').onclick=()=>{if(confirm('Сбросить весь прогресс?')){G=Object.assign(emp(),{bal:0,usd:0,luck:0,unl:[1,0,0,0,0],mute:G.mute,dex:{},skips:0,bestPer:[0,0,0,0,0]});S=emp();clearHistory();save();hud();$('mid').hidden=true;$('hint').hidden=false;$('mn').hidden=true}};
+
+$('app').addEventListener('pointerdown',e=>{
+  if(e.target.closest('.ov'))return;
+  if(e.target.closest('.toast'))return;
+  if(e.target.closest('#top button'))return;
+  if(e.target.closest('#chip'))return;
+  roll();
+});
+addEventListener('keydown',e=>{
+  if((e.code==='Space'||e.code==='Enter')&&$('st').hidden&&$('mn').hidden&&$('ix').hidden){
+    e.preventDefault();
+    if(!e.repeat)roll();
+  }
+});
+
 const SEC={s777:'Три семёрки',s666:'Число зверя',s000:'Нулевой номер',sKOT:'Слово «КОТ»',s112:'Экстренная служба',sMEGA:'Тот самый номер'};
 const HINT={s777:'Счастливая тройка',s666:'Число зверя… или просто цифры',s000:'Ничего. Совсем ничего',sKOT:'Усатый и полосатый',s112:'Позвони, если повезло',sMEGA:'Столица и три удачи'};
 const DEX=[['sm','Малый номер: 001–009',60],['ace','Серия «три туза»',40],['lt3','Три одинаковые буквы',30],['dg3','Все цифры одинаковые',25],['reg','Цифры совпадают с регионом',18],['rnd','Круглый номер: 100–900',15],['seq','Цифры подряд',12],['pal','Палиндром букв',5],['lt','Две одинаковые буквы',4],['mir','Зеркальные цифры',4],['dg','Две одинаковые цифры',2]];
-const pstr=p=>{const D=p.D.join(''),L=p.L,t=p.type;return(t===0?L[0]+D+L[1]+L[2]:t===1?L.join('')+' '+D:L[0]+' '+D)+' '+p.reg};
 const fan=r=>{tone(98,.9,'sawtooth',.09);[0,4,7,12,16,19,24,28].slice(0,3+r).forEach((x,i)=>tone(330*2**(x/12),.5,'triangle',.13,i*.09));if(r>=4)tone(1318,1.2,'sine',.1,.7)};
-function epic(b,ri,sec){const c=sec&&ri<3?'#facc15':RAR[ri].c,f=$('flash'),a=$('app'),bn=$('bn');
-f.style.background=c;f.className='';void f.offsetWidth;f.className='fl';
-if(ri>=3){a.classList.remove('shake');void a.offsetWidth;a.classList.add('shake');$('ry').style.setProperty('--rc',hexA(c,.28));$('ry').style.opacity=1;setTimeout(()=>{$('ry').style.opacity=0},4200)}
-$('bt').style.color=c;$('bt').textContent=sec?'★ СЕКРЕТНЫЙ НОМЕР ★':['','','РЕДКИЙ НОМЕР','ЭПИЧЕСКИЙ НОМЕР!','ЛЕГЕНДАРНЫЙ НОМЕР!!!'][ri];$('bs').style.color=c;$('bs').textContent='+'+fmt(b.v)+' ₽';
-bn.className='';void bn.offsetWidth;bn.className='on';
-burst(c,ri>=4?260:ri>=3?150:80);if(ri>=3){setTimeout(()=>burst(c,120),250);setTimeout(()=>burst('#ffffff',90),500)}
-$('pl').style.filter='drop-shadow(0 0 '+(10+ri*7)+'px '+c+')';fan(ri);try{navigator.vibrate&&navigator.vibrate(ri>=4?[80,40,80,40,200]:ri>=3?[60,30,120]:40)}catch(e){}}
+
+function epic(b,ri,sec){
+  const c = sec&&ri<3 ? '#facc15' : RAR[ri].c;
+  const f=$('flash'),a=$('app'),bn=$('bn');
+  f.style.background=c;f.className='';void f.offsetWidth;f.className='fl';
+  if(ri>=3){
+    a.classList.remove('shake','shake-hard');void a.offsetWidth;
+    a.classList.add(ri>=4 ? 'shake-hard' : 'shake');
+    $('ry').style.setProperty('--rc',hexA(c,.28));$('ry').style.opacity=1;
+    setTimeout(()=>{$('ry').style.opacity=0},4200);
+  }
+  $('bt').style.color=c;
+  $('bt').textContent = sec ? '★ СЕКРЕТНЫЙ НОМЕР ★' : ['','','РЕДКИЙ НОМЕР','ЭПИЧЕСКИЙ НОМЕР!','ЛЕГЕНДАРНЫЙ НОМЕР!!!'][ri];
+  $('bs').style.color=c;
+  $('bs').textContent='+'+fmt(b.v)+' ₽';
+  bn.className='';void bn.offsetWidth;bn.className='on';
+  burst(c,ri>=4?260:ri>=3?150:80);
+  if(ri>=3){setTimeout(()=>burst(c,120),250);setTimeout(()=>burst('#ffffff',90),500)}
+  if(ri>=4){setTimeout(()=>burst(c,180),750);setTimeout(()=>burst('#facc15',140),1000)}
+  $('pl').style.filter='drop-shadow(0 0 '+(10+ri*7)+'px '+c+')';
+  fan(ri);
+  try{navigator.vibrate&&navigator.vibrate(ri>=4?[80,40,80,80,200]:ri>=3?[60,30,120]:40)}catch(e){}
+}
+
 let ixt=0;
-function renderIx(){const dx=G.dex,sk=Object.keys(SEC);let h=`<div class="hd"><button id="ib" aria-label="Назад">←</button><h2>Индекс номеров</h2></div><div class="tabs"><button class="${ixt?'':'on'}" data-i="0">Редкие ${DEX.filter(d=>dx[d[0]]).length}/${DEX.length}</button><button class="${ixt?'on':''}" data-i="1">Секретки ${sk.filter(k=>dx[k]).length}/${sk.length}</button></div>`;
-if(!ixt)DEX.forEach(([k,n,m])=>{const d=dx[k],c=m>=40?'#facc15':m>=15?'#a855f7':m>=5?'#60a5fa':'#4ade80';h+=`<div class="dx${d?'':' lk'}"><div class="row" style="border:0;padding:0"><span style="color:${d?'#fff':'#9a9aae'}">${d?'✔':'○'} ${n}</span><b style="color:${c}">×${m}</b></div>${d?`<small>${d.s} · ${fmt(d.v)} ₽ · выпадало: ${d.n}</small>`:''}</div>`});
-else sk.forEach(k=>{const d=dx[k];h+=`<div class="dx${d?'':' lk'}"><div style="color:${d?'#facc15':'#9a9aae'}">${d?'★ '+SEC[k]:'🔒 ???'}</div><small>${d?d.s+' · '+fmt(d.v)+' ₽ · выпадало: '+d.n:'Подсказка: '+HINT[k]}</small></div>`});
-$('ix').innerHTML=h;$('ib').onclick=()=>{$('ix').hidden=true};$('ix').querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{ixt=+b.dataset.i;renderIx()})}
+function renderIx(){
+  const dx=G.dex,sk=Object.keys(SEC);
+  let h=`<div class="hd"><button id="ib" aria-label="Назад">←</button><h2>Индекс номеров</h2></div><div class="tabs"><button class="${ixt?'':'on'}" data-i="0">Редкие ${DEX.filter(d=>dx[d[0]]).length}/${DEX.length}</button><button class="${ixt?'on':''}" data-i="1">Секретки ${sk.filter(k=>dx[k]).length}/${sk.length}</button></div>`;
+  if(!ixt)DEX.forEach(([k,n,m])=>{
+    const d=dx[k],c=m>=40?'#facc15':m>=15?'#a855f7':m>=5?'#60a5fa':'#4ade80';
+    h+=`<div class="dx${d?'':' lk'}"><div class="row" style="border:0;padding:0"><span style="color:${d?'#fff':'#9a9aae'}">${d?'✔':'○'} ${n}</span><b style="color:${c}">×${m}</b></div>${d?`<small>${d.s} · ${fmt(d.v)} ₽ · выпадало: ${d.n}</small>`:''}</div>`;
+  });
+  else sk.forEach(k=>{
+    const d=dx[k];
+    h+=`<div class="dx${d?'':' lk'}"><div style="color:${d?'#facc15':'#9a9aae'}">${d?'★ '+SEC[k]:'🔒 ???'}</div><small>${d?d.s+' · '+fmt(d.v)+' ₽ · выпадало: '+d.n:'Подсказка: '+HINT[k]}</small></div>`;
+  });
+  $('ix').innerHTML=h;
+  $('ib').onclick=()=>{$('ix').hidden=true};
+  $('ix').querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{ixt=+b.dataset.i;renderIx()});
+}
 $('m6').onclick=()=>{$('mn').hidden=true;ixt=0;renderIx();$('ix').hidden=false};
+
 setR(0);hud();
 </script>
 </body>
